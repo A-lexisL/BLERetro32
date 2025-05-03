@@ -2,13 +2,14 @@
 #include <NimBLEDevice.h>
 
 #include "./bleretro32/bleretro32.h"
-#include "./xbox.h"
-#include "./esp32-arcade.h"
+#include "./bleretro32/xbox.h"
+
 
 
 pad_definition_t pad_list[] = {
-    {"Xbox Wireless Controller", xbox_to_retro},
-    {"ESP32 Arcade", esp32_arcade_to_retro}};
+    {"Xbox Wireless Controller"},
+};
+//only for XBOX wireless controller, sorry
 
 #define PIN_STATUS_LED 7 // 2 is board led
 

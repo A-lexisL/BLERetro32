@@ -3,8 +3,7 @@
 
 #include "./log_macros.h"
 #include "./bleretro32.h"
-#include "./joystick_gpio.h"
-
+#include "./xbox.h"
 #define SCAN_TIME 10
 
 NimBLEScan *scanner;
@@ -16,6 +15,7 @@ pad_definition_t *found_pad;
 
 CnnStatus cnn_status = CnnStatus::Idle;
 
+
 class AdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
 {
     void onResult(NimBLEAdvertisedDevice *advertisedDevice)
@@ -25,7 +25,8 @@ class AdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
         for (size_t i = 0; i < number_of_supported_pads;  i++)
         {
             if (deviceName == supported_pads[i].name)
-            {
+            {   
+                
                 BLERETRO_LOGF("** Found '%s'\n", supported_pads[i].name);
                 foundDevice = advertisedDevice;
                 found_pad = &supported_pads[i];
@@ -56,7 +57,6 @@ void BLERetro32_Setup(pad_definition_t *pad_list, size_t count)
     scanner->setWindow(900);
 
     BLERETRO_LOGF("Setting up GPIO\n");
-    GPIOSetup();
 }
 
 void ScanCompleteCB(NimBLEScanResults results)
@@ -118,29 +118,63 @@ public:
 
 void CharacteristicNofifyCB(NimBLERemoteCharacteristic *characteristic, uint8_t *data, size_t length, bool is_notify)
 {
-    static retro_joystick_status_t old_status;
-    auto status = old_status;
-    if (found_pad->bt_process_fn(data, length, &status))
+    static xbox_controller_data_t old_status;
+    if (length == sizeof(xbox_controller_data_t))
     {
-        if (memcmp(&old_status, &status, sizeof(retro_joystick_status_t)))
+        auto status = *((xbox_controller_data_t *)data);
+        if (memcmp(&old_status, &status, sizeof(xbox_controller_data_t)))
         {
             BLERETRO_LOGF("        Data %d-> ", millis());
-            BLERETRO_LOGF("isNotify: %d", is_notify);
-            BLERETRO_LOGF("btnA: %d ", status.btnA);
-            BLERETRO_LOGF("btnA_alt: %d ", status.btnA_alt);
-            BLERETRO_LOGF("btnB: %d ", status.btnB);
-            BLERETRO_LOGF("btnB_alt: %d ", status.btnB_alt);
-            BLERETRO_LOGF("Up: %d ", status.up);
-            BLERETRO_LOGF("Left: %d ", status.left);
-            BLERETRO_LOGF("Right: %d ", status.right);
-            BLERETRO_LOGF("Down: %d ", status.down);
-            BLERETRO_LOGF("Auto inc: %d ", status.auto_inc);
-            BLERETRO_LOGF("Auto dec: %d ", status.auto_dec);
+            BLERETRO_LOGF("isNotify: %d\n", is_notify);
+
+            if(status.btnA)
+                BLERETRO_LOGF("btnA: %d ", status.btnA);
+            if(status.btnX)
+                BLERETRO_LOGF("btnX: %d ", status.btnX);
+            if(status.btnB)
+                BLERETRO_LOGF("btnB: %d ", status.btnB);
+            if(status.btnY)
+                BLERETRO_LOGF("btnY: %d ", status.btnY);
+            //ABXY
+            if(DPAD_U<=status.dpad&&status.dpad<=DPAD_UL){
+                switch(status.dpad){
+                    case DPAD_U:
+                        BLERETRO_LOGF("dpad: up ");break;
+                    case DPAD_D:
+                        BLERETRO_LOGF("dpad: down ");break;
+                    case DPAD_L:
+                        BLERETRO_LOGF("dpad: left ");break;
+                    case DPAD_R:
+                        BLERETRO_LOGF("dpad: right ");break;
+                    case DPAD_DL:
+                        BLERETRO_LOGF("dpad: down left ");break;
+                    case DPAD_DR:
+                        BLERETRO_LOGF("dpad: down right ");break;
+                    case DPAD_UL:
+                        BLERETRO_LOGF("dpad: up left ");break;
+                    case DPAD_UR:
+                        BLERETRO_LOGF("dpad: up right ");break;
+                }
+            }
+            //dpad
+            if(status.btnL)
+                BLERETRO_LOGF("LB: %d ", status.btnL);
+            if(status.btnR)
+                BLERETRO_LOGF("RB: %d ", status.btnR);
+            //shoulder button
+
+            if(status.trg_l>=TRIGGER_TOLERANCE)
+            BLERETRO_LOGF("LT: %d ",status.trg_l>=TRIGGER_TOLERANCE);
+            if(status.trg_r>=TRIGGER_TOLERANCE)
+            BLERETRO_LOGF("RT: %d ",status.trg_r>=TRIGGER_TOLERANCE);
+            //trigger
             BLERETRO_LOGF("\n");
 
+            BLERETRO_LOGF("joy_l_axis(%d,%d) ",status.joy_l_h,status.joy_l_v);
+            BLERETRO_LOGF("joy_r_axis(%d,%d) ",status.joy_r_h,status.joy_r_v);
+            //joycon
             old_status = status;
 
-            StatusToGPIO(status);
         }
     }
 }
@@ -221,7 +255,6 @@ CnnStatus BLERetro32_Loop()
         }
     } else if (cnn_status == CnnStatus::Connected)
     {
-        DoAutofire();
     }
 
     return cnn_status;

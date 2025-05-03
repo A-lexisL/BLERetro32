@@ -9,4 +9,5 @@
 
 #define BLERETRO_MSGF(MSG, ...) Serial.printf(MSG __VA_OPT__(, ) __VA_ARGS__)
 
+
 #endif
