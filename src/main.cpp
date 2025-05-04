@@ -11,7 +11,7 @@ pad_definition_t pad_list[] = {
 };
 //only for XBOX wireless controller, sorry
 
-#define PIN_STATUS_LED 7 // 2 is board led
+//#define PIN_STATUS_LED 8 // 2 is board led
 
 #define STATUS_LED_FAST_TIME 200
 #define STATUS_LED_SLOW_TIME 1200
@@ -66,7 +66,7 @@ void setup()
     Serial.begin(115200);
     Serial.printf("Starting BLERetro32\n");
 
-    pinMode(PIN_STATUS_LED, OUTPUT);
+    //pinMode(PIN_STATUS_LED, OUTPUT);
 
     BLERetro32_Setup(pad_list, sizeof(pad_list) / sizeof(pad_definition_t));
 
@@ -75,7 +75,7 @@ void setup()
 void loop()
 {
     auto cnn_status = BLERetro32_Loop();
-    digitalWrite(PIN_STATUS_LED, GetLedStatus(cnn_status));
+    //digitalWrite(PIN_STATUS_LED, GetLedStatus(cnn_status));
 
     delay(LOOP_DELAY);
 }

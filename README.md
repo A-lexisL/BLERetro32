@@ -5,19 +5,7 @@
 ## the original README by Peluko:
 [README](https://github.com/Peluko/BLERetro32/blob/main/README.md)
 
-## README by A-lexisL
-project tree:  
-src
-├── bleretro32
-│   ├── bleretro32.cpp
-│   ├── bleretro32.h
-│   └── log_macros.h
-|   └── xbox.h
-├── main.cpp
-
-
-
- bleretro32.cpp
+bleretro32.cpp
 
 **joystick_gpio.cpp**
 output the received information to gpio, should **disable**.
@@ -26,6 +14,18 @@ log_macros.h
 It seems that this is for the designed esp32-gamepad by Peluko. Not useful.  
 
 main.cpp
-xbox.cpp  
+**xbox.cpp**  
 esp32 receives notive -> CharacteristicNofifyCB(has raw data)->xbox_to_retro(convert raw data to xbox_controller_data_t and map it to retro_status) ->CharacteristicNofifyCB(report it)
+## README by A-lexisL
+project tree:  
+src
+├── bleretro32
+│   ├── bleretro32.cpp
+│   ├── bleretro32.h
+│   └── log_macros.h
+│   └── xbox.h
+├── main.cpp
+ork
+the workflow is simplified but less compatible.  
 
+CharacteristicNofifyCB will interpret the data and store/report it.

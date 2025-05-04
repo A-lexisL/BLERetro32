@@ -1,0 +1,6 @@
+{
+    "name": "bleretro32",
+    "version": "1.0.0",
+    "description": "BLE for XBOX and esp32",
+    "srcDir": "src/bleretro32"
+  }
