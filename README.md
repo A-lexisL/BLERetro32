@@ -17,15 +17,15 @@ main.cpp
 **xbox.cpp**  
 esp32 receives notive -> CharacteristicNofifyCB(has raw data)->xbox_to_retro(convert raw data to xbox_controller_data_t and map it to retro_status) ->CharacteristicNofifyCB(report it)
 ## README by A-lexisL
-project tree:  
-src
-├── bleretro32
-│   ├── bleretro32.cpp
-│   ├── bleretro32.h
-│   └── log_macros.h
-│   └── xbox.h
-├── main.cpp
-ork
+project tree:   
+src  
+├── bleretro32  
+│   ├── bleretro32.cpp  
+│   ├── bleretro32.h  
+│   └── log_macros.h  
+│   └── xbox.h  
+├── main.cpp  
+
 the workflow is simplified but less compatible.  
 
 CharacteristicNofifyCB will interpret the data and store/report it.
