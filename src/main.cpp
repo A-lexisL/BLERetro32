@@ -1,8 +1,10 @@
+#ifdef BLERETRO32_TEST
+
 #include <Arduino.h>
 #include <NimBLEDevice.h>
 
-#include "./bleretro32/bleretro32.h"
-#include "./bleretro32/xbox.h"
+#include "bleretro32/bleretro32.h"
+#include "bleretro32/xbox.h"
 
 
 
@@ -62,7 +64,7 @@ bool GetLedStatus(CnnStatus cnn_status)
 #define LOOP_DELAY 5
 
 void setup()
-{
+{   
     Serial.begin(115200);
     Serial.printf("Starting BLERetro32\n");
 
@@ -79,3 +81,4 @@ void loop()
 
     delay(LOOP_DELAY);
 }
+#endif

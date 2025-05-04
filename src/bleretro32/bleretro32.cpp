@@ -8,13 +8,10 @@
 
 NimBLEScan *scanner;
 NimBLEAdvertisedDevice *foundDevice;
-
 pad_definition_t *supported_pads = nullptr;
 size_t number_of_supported_pads = 0;
 pad_definition_t *found_pad;
-
 CnnStatus cnn_status = CnnStatus::Idle;
-
 
 class AdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
 {
@@ -36,6 +33,8 @@ class AdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
         }
     }
 };
+
+static xbox_controller_data_t old_status;
 
 void BLERetro32_Setup(pad_definition_t *pad_list, size_t count)
 {
@@ -117,8 +116,7 @@ public:
 };
 
 void CharacteristicNofifyCB(NimBLERemoteCharacteristic *characteristic, uint8_t *data, size_t length, bool is_notify)
-{
-    static xbox_controller_data_t old_status;
+{   
     if (length == sizeof(xbox_controller_data_t))
     {
         auto status = *((xbox_controller_data_t *)data);
@@ -174,7 +172,6 @@ void CharacteristicNofifyCB(NimBLERemoteCharacteristic *characteristic, uint8_t 
             BLERETRO_LOGF("joy_r_axis(%d,%d) ",status.joy_r_h,status.joy_r_v);
             //joycon
             old_status = status;
-
         }
     }
 }
@@ -258,4 +255,8 @@ CnnStatus BLERetro32_Loop()
     }
 
     return cnn_status;
+}
+
+xbox_controller_data_t ReturnControllerData(void){
+    return old_status;
 }

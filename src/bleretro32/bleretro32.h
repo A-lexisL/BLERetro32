@@ -2,7 +2,7 @@
 #define BLERETRO32_H
 
 #include <stdlib.h>
-
+#include "./xbox.h"
 enum class CnnStatus : uint8_t
 {
     Idle,
@@ -20,5 +20,5 @@ struct pad_definition_t
 
 void BLERetro32_Setup(pad_definition_t *pad_list, size_t count);
 CnnStatus BLERetro32_Loop();
-
+xbox_controller_data_t ReturnControllerData(void);
 #endif
