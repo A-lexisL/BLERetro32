@@ -1,7 +1,6 @@
 #ifndef XBOX_H
 #define XBOX_H
-
-#include "bleretro32.h"
+#include <Arduino.h>
 struct xbox_controller_data_t
 {
     uint16_t joy_l_h; // bytes 0 1. 0 to 65535, middle 32768
@@ -38,7 +37,24 @@ struct xbox_controller_data_t
     bool btnShare : 1;
     bool _padding_5 : 7;
 };
+
+struct XBOX_JoyconLocation{
+    double r;
+    double angle;
+};
+/*  
+       -pi/2
+         |
+       3 | 4
++/-pi----+----  0pi
+       2 | 1
+         |
+       pi/2
+*/
+
+
 #define AXIS_MAX 65535
+#define AXIS_MIDDLE 32767
 #define TRI_MAX 1023
 
 #define DPAD_U 1
@@ -49,4 +65,8 @@ struct xbox_controller_data_t
 #define DPAD_DL 6
 #define DPAD_L 7
 #define DPAD_UL 8
+#define LEFTJOYCON 0
+#define RIGHTJOYCON 1
+
+XBOX_JoyconLocation XBOX_InterpretJoycon(xbox_controller_data_t xboxdata,uint8_t WhichJoyCon);
 #endif

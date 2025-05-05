@@ -121,7 +121,9 @@ void CharacteristicNofifyCB(NimBLERemoteCharacteristic *characteristic, uint8_t 
     {
         auto status = *((xbox_controller_data_t *)data);
         if (memcmp(&old_status, &status, sizeof(xbox_controller_data_t)))
-        {
+        {   
+            XBOX_JoyconLocation xboxjoyconLdata=XBOX_InterpretJoycon(status,LEFTJOYCON);
+            XBOX_JoyconLocation xboxjoyconRdata=XBOX_InterpretJoycon(status,RIGHTJOYCON);
             if(ControllerDataSerialReportStatus==ControllerDataSerialReportEnable){
                 BLERETRO_LOGF("        Data %d-> ", millis());
                 BLERETRO_LOGF("isNotify: %d\n", is_notify);
@@ -167,8 +169,8 @@ void CharacteristicNofifyCB(NimBLERemoteCharacteristic *characteristic, uint8_t 
                 //trigger
                 BLERETRO_LOGF("\n");
 
-                BLERETRO_LOGF("joy_l_axis(%d,%d) ",status.joy_l_h,status.joy_l_v);
-                BLERETRO_LOGF("joy_r_axis(%d,%d) ",status.joy_r_h,status.joy_r_v);
+                BLERETRO_LOGF("joy_l(%d,%d),(%.2lf,%.2lf)\n",status.joy_l_h,status.joy_l_v,xboxjoyconLdata.r,xboxjoyconLdata.angle);
+                BLERETRO_LOGF("joy_r(%d,%d),(%.2lf,%.2lf)\n",status.joy_r_h,status.joy_r_v,xboxjoyconRdata.r,xboxjoyconRdata.angle);
                 //joycon
             }
             old_status = status;

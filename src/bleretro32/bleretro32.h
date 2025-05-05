@@ -2,7 +2,7 @@
 #define BLERETRO32_H
 
 #include <stdlib.h>
-#include "./xbox.h"
+#include "xbox.h"
 enum class CnnStatus : uint8_t
 {
     Idle,
