@@ -56,6 +56,8 @@ struct XBOX_JoyconLocation{
 #define AXIS_MAX 65535
 #define AXIS_MIDDLE 32767
 #define TRI_MAX 1023
+#define PRESSED 1
+#define UNPRESSED 0
 
 #define DPAD_U 1
 #define DPAD_UR 2
