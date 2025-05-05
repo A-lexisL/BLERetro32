@@ -1,7 +1,7 @@
 #ifndef XBOX_H
 #define XBOX_H
 #include <Arduino.h>
-struct xbox_controller_data_t
+struct __attribute__((packed)) xbox_controller_data_t
 {
     uint16_t joy_l_h; // bytes 0 1. 0 to 65535, middle 32768
     uint16_t joy_l_v; // bytes 2 3. 0 to 65535, middle 32768
