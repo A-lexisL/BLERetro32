@@ -39,8 +39,7 @@ struct xbox_controller_data_t
     bool _padding_5 : 7;
 };
 #define AXIS_MAX 65535
-#define JOYCON_DEADZONE 5000
-#define TRIGGER_DEADZONE 0
+#define TRI_MAX 1023
 
 #define DPAD_U 1
 #define DPAD_UR 2
