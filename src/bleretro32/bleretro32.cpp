@@ -12,7 +12,7 @@ pad_definition_t *supported_pads = nullptr;
 size_t number_of_supported_pads = 0;
 pad_definition_t *found_pad;
 CnnStatus cnn_status = CnnStatus::Idle;
-
+ControllerDataSerialReport ControllerDataSerialReportStatus=ControllerDataSerialReportEnable;
 class AdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
 {
     void onResult(NimBLEAdvertisedDevice *advertisedDevice)
@@ -122,55 +122,55 @@ void CharacteristicNofifyCB(NimBLERemoteCharacteristic *characteristic, uint8_t 
         auto status = *((xbox_controller_data_t *)data);
         if (memcmp(&old_status, &status, sizeof(xbox_controller_data_t)))
         {
-            BLERETRO_LOGF("        Data %d-> ", millis());
-            BLERETRO_LOGF("isNotify: %d\n", is_notify);
+            if(ControllerDataSerialReportStatus==ControllerDataSerialReportEnable){
+                BLERETRO_LOGF("        Data %d-> ", millis());
+                BLERETRO_LOGF("isNotify: %d\n", is_notify);
 
-            if(status.btnA)
-                BLERETRO_LOGF("btnA: %d ", status.btnA);
-            if(status.btnX)
-                BLERETRO_LOGF("btnX: %d ", status.btnX);
-            if(status.btnB)
-                BLERETRO_LOGF("btnB: %d ", status.btnB);
-            if(status.btnY)
-                BLERETRO_LOGF("btnY: %d ", status.btnY);
-            //ABXY
-            if(DPAD_U<=status.dpad&&status.dpad<=DPAD_UL){
-                switch(status.dpad){
-                    case DPAD_U:
-                        BLERETRO_LOGF("dpad: up ");break;
-                    case DPAD_D:
-                        BLERETRO_LOGF("dpad: down ");break;
-                    case DPAD_L:
-                        BLERETRO_LOGF("dpad: left ");break;
-                    case DPAD_R:
-                        BLERETRO_LOGF("dpad: right ");break;
-                    case DPAD_DL:
-                        BLERETRO_LOGF("dpad: down left ");break;
-                    case DPAD_DR:
-                        BLERETRO_LOGF("dpad: down right ");break;
-                    case DPAD_UL:
-                        BLERETRO_LOGF("dpad: up left ");break;
-                    case DPAD_UR:
-                        BLERETRO_LOGF("dpad: up right ");break;
+                if(status.btnA)
+                    BLERETRO_LOGF("btnA: %d ", status.btnA);
+                if(status.btnX)
+                    BLERETRO_LOGF("btnX: %d ", status.btnX);
+                if(status.btnB)
+                    BLERETRO_LOGF("btnB: %d ", status.btnB);
+                if(status.btnY)
+                    BLERETRO_LOGF("btnY: %d ", status.btnY);
+                //ABXY
+                if(DPAD_U<=status.dpad&&status.dpad<=DPAD_UL){
+                    switch(status.dpad){
+                        case DPAD_U:
+                            BLERETRO_LOGF("dpad: up ");break;
+                        case DPAD_D:
+                            BLERETRO_LOGF("dpad: down ");break;
+                        case DPAD_L:
+                            BLERETRO_LOGF("dpad: left ");break;
+                        case DPAD_R:
+                            BLERETRO_LOGF("dpad: right ");break;
+                        case DPAD_DL:
+                            BLERETRO_LOGF("dpad: down left ");break;
+                        case DPAD_DR:
+                            BLERETRO_LOGF("dpad: down right ");break;
+                        case DPAD_UL:
+                            BLERETRO_LOGF("dpad: up left ");break;
+                        case DPAD_UR:
+                            BLERETRO_LOGF("dpad: up right ");break;
+                    }
                 }
+                //dpad
+                if(status.btnL)
+                    BLERETRO_LOGF("LB: %d ", status.btnL);
+                if(status.btnR)
+                    BLERETRO_LOGF("RB: %d ", status.btnR);
+                //shoulder button
+
+                BLERETRO_LOGF("LT: %d ",status.trg_l);
+                BLERETRO_LOGF("RT: %d ",status.trg_r);
+                //trigger
+                BLERETRO_LOGF("\n");
+
+                BLERETRO_LOGF("joy_l_axis(%d,%d) ",status.joy_l_h,status.joy_l_v);
+                BLERETRO_LOGF("joy_r_axis(%d,%d) ",status.joy_r_h,status.joy_r_v);
+                //joycon
             }
-            //dpad
-            if(status.btnL)
-                BLERETRO_LOGF("LB: %d ", status.btnL);
-            if(status.btnR)
-                BLERETRO_LOGF("RB: %d ", status.btnR);
-            //shoulder button
-
-            if(status.trg_l>=TRIGGER_TOLERANCE)
-            BLERETRO_LOGF("LT: %d ",status.trg_l>=TRIGGER_TOLERANCE);
-            if(status.trg_r>=TRIGGER_TOLERANCE)
-            BLERETRO_LOGF("RT: %d ",status.trg_r>=TRIGGER_TOLERANCE);
-            //trigger
-            BLERETRO_LOGF("\n");
-
-            BLERETRO_LOGF("joy_l_axis(%d,%d) ",status.joy_l_h,status.joy_l_v);
-            BLERETRO_LOGF("joy_r_axis(%d,%d) ",status.joy_r_h,status.joy_r_v);
-            //joycon
             old_status = status;
         }
     }
@@ -259,4 +259,8 @@ CnnStatus BLERetro32_Loop()
 
 xbox_controller_data_t ReturnControllerData(void){
     return old_status;
+}
+
+void SetControllerSerialReportStatus(ControllerDataSerialReport input){
+    ControllerDataSerialReportStatus=input;
 }
